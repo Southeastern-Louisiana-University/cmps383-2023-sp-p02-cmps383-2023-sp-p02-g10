@@ -42,8 +42,9 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
-    await SeedHelper.MigrateAndSeed(db);
+    var services = scope.ServiceProvider;
+
+    await SeedHelper.Initialize(services);
 }
 
 // Configure the HTTP request pipeline.
@@ -63,6 +64,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
 
 //see: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-7.0
 // Hi 383 - this is added so we can test our web project automatically. More on that later

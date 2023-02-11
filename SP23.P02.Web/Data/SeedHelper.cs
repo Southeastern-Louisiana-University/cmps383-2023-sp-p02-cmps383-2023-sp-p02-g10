@@ -10,14 +10,44 @@ public static class SeedHelper
 
     public static async Task Initialize(IServiceProvider services)
     {
-        var context = services.GetRequiredService<DataContext>();
-        await context.Database.MigrateAsync();
+        var dataContext = services.GetRequiredService<DataContext>();
+        await dataContext.Database.MigrateAsync();
 
 
-        await MigrateAndSeed(context);
+        AddTrainStations(dataContext);
         await AddRoles(services);
         await AddUsers(services);
+        await MigrateAndSeed(dataContext);
 
+    }
+
+    private static void AddTrainStations(DataContext dataContext)
+    {
+        var stations = dataContext.Set<TrainStation>();
+        if (stations.Any())
+        {
+            return;
+        }
+
+        stations.Add(new TrainStation
+        {
+            Name = "Hammond Trainstation,",
+            Address = "123 Hammond Street",
+        });
+
+        stations.Add(new TrainStation
+        {
+            Name = "Hammond Trainstation,",
+            Address = "123 Hammond Street",
+        });
+
+        stations.Add(new TrainStation
+        {
+            Name = "Hammond Trainstation,",
+            Address = "123 Hammond Street",
+        });
+
+        dataContext.SaveChanges();
     }
 
     public static async Task MigrateAndSeed(DataContext dataContext)
