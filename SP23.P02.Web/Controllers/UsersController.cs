@@ -22,7 +22,6 @@ public class UsersController : ControllerBase
     [Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<UserDto>> Create(CreateUserDto dto)
     {
-        //wtf is this
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
         var newUser = new User

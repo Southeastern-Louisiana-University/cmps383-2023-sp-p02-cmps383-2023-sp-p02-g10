@@ -21,4 +21,13 @@ public class DataContext : IdentityDbContext<User, Role, int, IdentityUserClaim<
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
     }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+
+        // this stores all decimal values to two decimal points by default - good enough for our purposes
+        configurationBuilder.Properties<decimal>()
+            .HavePrecision(18, 2);
+    }
 }

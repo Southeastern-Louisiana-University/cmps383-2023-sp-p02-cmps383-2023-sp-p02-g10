@@ -7,6 +7,19 @@ namespace SP23.P02.Web.Data;
 
 public static class SeedHelper
 {
+
+    public static async Task Initialize(IServiceProvider services)
+    {
+        var context = services.GetRequiredService<DataContext>();
+        await context.Database.MigrateAsync();
+
+
+        await MigrateAndSeed(context);
+        await AddRoles(services);
+        await AddUsers(services);
+
+    }
+
     public static async Task MigrateAndSeed(DataContext dataContext)
     {
         await dataContext.Database.MigrateAsync();
@@ -81,5 +94,6 @@ public static class SeedHelper
 
         await services.GetRequiredService<DataContext>().SaveChangesAsync();
     }
+
 
 }
