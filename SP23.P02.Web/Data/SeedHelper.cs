@@ -21,6 +21,10 @@ public static class SeedHelper
                         Name = "Hammond",
                         Address = "1234 Place st"
                     });
+                dataContext.Set<TrainStation>()
+               .Add(new TrainStation
+                 { Address = "Grick",
+                    Name = "Fred" });
             }
 
             await dataContext.SaveChangesAsync();
