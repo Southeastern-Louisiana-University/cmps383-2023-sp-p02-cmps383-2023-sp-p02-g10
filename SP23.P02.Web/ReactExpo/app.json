@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "SP23-P02-Mobile-g10",
+    "slug": "SP23-P02-Mobile-g10",
+    "owner": "envoc_infrastructure",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.selu383.sp23.p02.g10"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
