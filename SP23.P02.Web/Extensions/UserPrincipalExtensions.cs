@@ -21,4 +21,3 @@ public static class UserPrincipalExtensions
         return claimsPrincipal.Identity?.Name;
     }
 }
-

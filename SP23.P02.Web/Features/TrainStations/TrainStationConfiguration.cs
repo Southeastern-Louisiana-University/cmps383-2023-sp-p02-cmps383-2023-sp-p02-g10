@@ -13,5 +13,10 @@ public class TrainStationConfiguration : IEntityTypeConfiguration<TrainStation>
 
         builder.Property(x => x.Address)
             .IsRequired();
+
+        builder.HasOne(x => x.Manager)
+         .WithMany()
+         .HasForeignKey(x => x.ManagerId)
+         .OnDelete(DeleteBehavior.ClientCascade);
     }
 }

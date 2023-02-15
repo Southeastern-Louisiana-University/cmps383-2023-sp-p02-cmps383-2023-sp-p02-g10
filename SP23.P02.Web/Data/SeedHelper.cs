@@ -15,9 +15,9 @@ public static class SeedHelper
 
 
         AddTrainStations(dataContext);
+
         await AddRoles(services);
         await AddUsers(services);
-        await MigrateAndSeed(dataContext);
 
     }
 
@@ -48,28 +48,6 @@ public static class SeedHelper
         });
 
         dataContext.SaveChanges();
-    }
-
-    public static async Task MigrateAndSeed(DataContext dataContext)
-    {
-        await dataContext.Database.MigrateAsync();
-
-        var trainStations = dataContext.Set<TrainStation>();
-
-        if (!await trainStations.AnyAsync())
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                dataContext.Set<TrainStation>()
-                    .Add(new TrainStation
-                    {
-                        Name = "Hammond",
-                        Address = "1234 Place st"
-                    });
-            }
-
-            await dataContext.SaveChangesAsync();
-        }
     }
 
     private static async Task AddRoles(IServiceProvider services)

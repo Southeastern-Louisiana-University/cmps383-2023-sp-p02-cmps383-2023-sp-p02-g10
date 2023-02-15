@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SP23.P02.Web.Data;
+using SP23.P02.Web.Extensions;
 using SP23.P02.Web.Features.Authorization;
 using SP23.P02.Web.Features.TrainStations;
 
@@ -40,7 +41,7 @@ public class StationsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = RoleNames.Admin)]
+    [Authorize]
     public ActionResult<TrainStationDto> CreateStation(TrainStationDto dto)
     {
         if (IsInvalid(dto))
@@ -51,8 +52,14 @@ public class StationsController : ControllerBase
         var station = new TrainStation
         {
             Name = dto.Name,
-            Address = dto.Address,
+            Address = dto.Address
         };
+
+        if (!User.IsInRole(RoleNames.Admin) && station.ManagerId != User.GetCurrentUserId())
+        {
+            return Forbid();
+        }
+
         stations.Add(station);
 
         dataContext.SaveChanges();
@@ -64,18 +71,24 @@ public class StationsController : ControllerBase
 
     [HttpPut]
     [Route("{id}")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [Authorize]
     public ActionResult<TrainStationDto> UpdateStation(int id, TrainStationDto dto)
     {
-        if (IsInvalid(dto))
-        {
-            return BadRequest();
-        }
 
         var station = stations.FirstOrDefault(x => x.Id == id);
         if (station == null)
         {
             return NotFound();
+        }
+
+        if (!User.IsInRole(RoleNames.Admin) && station.ManagerId != User.GetCurrentUserId())
+        {
+            return Forbid();
+        }
+
+        if (IsInvalid(dto))
+        {
+            return BadRequest();
         }
 
         station.Name = dto.Name;
@@ -90,13 +103,18 @@ public class StationsController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [Authorize]
     public ActionResult DeleteStation(int id)
     {
         var station = stations.FirstOrDefault(x => x.Id == id);
         if (station == null)
         {
             return NotFound();
+        }
+
+        if (!User.IsInRole(RoleNames.Admin) && station.ManagerId != User.GetCurrentUserId())
+        {
+            return Forbid();
         }
 
         stations.Remove(station);
