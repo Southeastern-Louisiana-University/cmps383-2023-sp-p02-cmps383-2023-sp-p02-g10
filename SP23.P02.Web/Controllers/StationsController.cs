@@ -44,6 +44,9 @@ public class StationsController : ControllerBase
     [Authorize]
     public ActionResult<TrainStationDto> CreateStation(TrainStationDto dto)
     {
+
+
+
         if (IsInvalid(dto))
         {
             return BadRequest();
@@ -52,7 +55,8 @@ public class StationsController : ControllerBase
         var station = new TrainStation
         {
             Name = dto.Name,
-            Address = dto.Address
+            Address = dto.Address,
+            ManagerId = dto.ManagerId
         };
 
         if (!User.IsInRole(RoleNames.Admin) && station.ManagerId != User.GetCurrentUserId())
@@ -93,6 +97,7 @@ public class StationsController : ControllerBase
 
         station.Name = dto.Name;
         station.Address = dto.Address;
+        station.ManagerId = dto.ManagerId;
 
         dataContext.SaveChanges();
 
@@ -139,6 +144,7 @@ public class StationsController : ControllerBase
                 Id = x.Id,
                 Name = x.Name,
                 Address = x.Address,
+                ManagerId = x.ManagerId
             });
     }
 }

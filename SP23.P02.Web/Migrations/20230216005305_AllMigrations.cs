@@ -6,11 +6,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SP23.P02.Web.Migrations
 {
     /// <inheritdoc />
-    public partial class UsersAndRoles : Migration
+    public partial class AllMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "ManagerId",
+                table: "TrainStation",
+                type: "int",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -159,6 +165,11 @@ namespace SP23.P02.Web.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_TrainStation_ManagerId",
+                table: "TrainStation",
+                column: "ManagerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -196,11 +207,22 @@ namespace SP23.P02.Web.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_TrainStation_AspNetUsers_ManagerId",
+                table: "TrainStation",
+                column: "ManagerId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_TrainStation_AspNetUsers_ManagerId",
+                table: "TrainStation");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -221,6 +243,14 @@ namespace SP23.P02.Web.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropIndex(
+                name: "IX_TrainStation_ManagerId",
+                table: "TrainStation");
+
+            migrationBuilder.DropColumn(
+                name: "ManagerId",
+                table: "TrainStation");
         }
     }
 }

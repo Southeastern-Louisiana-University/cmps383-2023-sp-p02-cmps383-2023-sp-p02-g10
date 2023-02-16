@@ -19,7 +19,7 @@ internal static class TrainStationsHelpers
             request.Id = resultDto.Id;
             return new DeleteTrainStation(resultDto, webClient);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return null;
         }
