@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SP23.P02.Web.Data;
+using SP23.P02.Web.Extensions;
+using SP23.P02.Web.Features.Authorization;
 using SP23.P02.Web.Features.TrainStations;
 
 namespace SP23.P02.Web.Controllers;
@@ -38,8 +41,12 @@ public class StationsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public ActionResult<TrainStationDto> CreateStation(TrainStationDto dto)
     {
+
+
+
         if (IsInvalid(dto))
         {
             return BadRequest();
@@ -49,7 +56,14 @@ public class StationsController : ControllerBase
         {
             Name = dto.Name,
             Address = dto.Address,
+            ManagerId = dto.ManagerId
         };
+
+        if (!User.IsInRole(RoleNames.Admin) && station.ManagerId != User.GetCurrentUserId())
+        {
+            return Forbid();
+        }
+
         stations.Add(station);
 
         dataContext.SaveChanges();
@@ -61,12 +75,9 @@ public class StationsController : ControllerBase
 
     [HttpPut]
     [Route("{id}")]
+    [Authorize]
     public ActionResult<TrainStationDto> UpdateStation(int id, TrainStationDto dto)
     {
-        if (IsInvalid(dto))
-        {
-            return BadRequest();
-        }
 
         var station = stations.FirstOrDefault(x => x.Id == id);
         if (station == null)
@@ -74,8 +85,19 @@ public class StationsController : ControllerBase
             return NotFound();
         }
 
+        if (!User.IsInRole(RoleNames.Admin) && station.ManagerId != User.GetCurrentUserId())
+        {
+            return Forbid();
+        }
+
+        if (IsInvalid(dto))
+        {
+            return BadRequest();
+        }
+
         station.Name = dto.Name;
         station.Address = dto.Address;
+        station.ManagerId = dto.ManagerId;
 
         dataContext.SaveChanges();
 
@@ -86,12 +108,18 @@ public class StationsController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
+    [Authorize]
     public ActionResult DeleteStation(int id)
     {
         var station = stations.FirstOrDefault(x => x.Id == id);
         if (station == null)
         {
             return NotFound();
+        }
+
+        if (!User.IsInRole(RoleNames.Admin) && station.ManagerId != User.GetCurrentUserId())
+        {
+            return Forbid();
         }
 
         stations.Remove(station);
@@ -116,6 +144,7 @@ public class StationsController : ControllerBase
                 Id = x.Id,
                 Name = x.Name,
                 Address = x.Address,
+                ManagerId = x.ManagerId
             });
     }
 }
